@@ -1,14 +1,12 @@
 package com.nikolascramer;
 
-import java.util.*;
-
 public class User {
-    private Location dropoff_location;
-    private Location pickup_location;
+    private Node dropoff_location;
+    private Node pickup_location;
+    public Boolean picked_up;
 
-    public User(Location dropoff_location, Location pickup_location) {
+    public User(Node dropoff_location, Node pickup_location) {
         this.dropoff_location = dropoff_location;
         this.pickup_location = pickup_location;
     }
-
 }

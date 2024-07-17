@@ -1,12 +1,10 @@
 package com.nikolascramer;
 
-import java.util.*;
-
-public class Location {
+public class Node {
     private int x;
     private int y;
 
-    public Location(int x, int y) {
+    public Node(int x, int y) {
         this.x = x;
         this.y = y;
     }

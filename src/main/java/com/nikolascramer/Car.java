@@ -9,7 +9,7 @@ public class Car {
     public static final int SPEED = 1;
     public List<Node> route;
 
-    public Car(Node location, User[] passengers) {
+    public Car(Node location) {
         this.location = location;
         this.passengers = new ArrayList<>();
         this.route = new ArrayList<>();

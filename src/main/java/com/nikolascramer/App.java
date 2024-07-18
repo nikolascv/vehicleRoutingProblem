@@ -6,6 +6,7 @@ public class App {
     public static void main(String[] args) {
         // Create some test data
         // Create a set of 10 nodes and then create a graph out of those.
+        /*
         List<Node> nodes = new ArrayList<>();
         List<List<Node>> edges_collection = new ArrayList<>();
         Random r = new Random();
@@ -16,8 +17,6 @@ public class App {
                 
             }
         }
-
-        Solver solver = new Solver();
-        solver.startSolve();
+        */
     }
 }

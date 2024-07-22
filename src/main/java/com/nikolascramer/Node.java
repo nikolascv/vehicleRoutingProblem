@@ -1,11 +1,9 @@
 package com.nikolascramer;
 
 public class Node {
-    private int x;
-    private int y;
+    private int id;
 
-    public Node(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Node(int id) {
+        this.id = id;
     }
 }

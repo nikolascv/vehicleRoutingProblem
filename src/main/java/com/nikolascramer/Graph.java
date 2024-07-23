@@ -1,9 +1,7 @@
 package com.nikolascramer;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.Buffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,8 +16,8 @@ public class Graph {
         this.adjVertices.putIfAbsent(node, new ArrayList<>());
     }
 
-    public void addNode(int x, int y) {
-        this.adjVertices.putIfAbsent(new Node(x, y), new ArrayList<>());
+    public void addNode(int id) {
+        this.adjVertices.putIfAbsent(new Node(id), new ArrayList<>());
     }
 
     public void removeNode(Node node) {
@@ -27,26 +25,26 @@ public class Graph {
         adjVertices.remove(node);
     }
 
-    public static List<List<String>> csvToAdjList(String path) {
-        List<List<String>> records = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+    public static Map<Node, List<Node>> csvToAdjList(File file) {
+        Map<Node, List<Node>> adjacencyList = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                records.add(Arrays.asList(values));
+                String[] parts = line.split(",", 2);
+                int keyId = Integer.parseInt(parts[0]);
+                Node keyNode = new Node(keyId);
+
+                List<Node> valueNodes = Arrays.stream(parts[1].split("/"))
+                        .map(id -> new Node(Integer.parseInt(id)))
+                        .collect(Collectors.toList());
+
+                adjacencyList.put(keyNode, valueNodes);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        Map<Node, List<Node>> map = new HashMap<>();
-        List<Node> new_nodes = new ArrayList<>();
 
-        for (List<String> entry: records) {
-            new_nodes.add(new Node(Integer.valueOf(entry.get(0))));
-        }
-        for (List<String> list : records) {
-
-        }
+        return adjacencyList;
     }
 
     public void addEdge(Node node1, Node node2) {
@@ -64,5 +62,11 @@ public class Graph {
         if (eN2 != null) {
             eN2.remove(node1);
         }
+    }
+
+    public List<Node> getNodes() {
+        List<Node> nodes = new ArrayList<>();
+        this.adjVertices.forEach((key, value) -> nodes.add(key));
+        return nodes;
     }
 }

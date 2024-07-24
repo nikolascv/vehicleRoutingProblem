@@ -25,28 +25,6 @@ public class Graph {
         adjVertices.remove(node);
     }
 
-    public static Map<Node, List<Node>> csvToAdjList(File file) {
-        Map<Node, List<Node>> adjacencyList = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",", 2);
-                int keyId = Integer.parseInt(parts[0]);
-                Node keyNode = new Node(keyId);
-
-                List<Node> valueNodes = Arrays.stream(parts[1].split("/"))
-                        .map(id -> new Node(Integer.parseInt(id)))
-                        .collect(Collectors.toList());
-
-                adjacencyList.put(keyNode, valueNodes);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return adjacencyList;
-    }
-
     public void addEdge(Node node1, Node node2) {
         adjVertices.get(node1).add(node2);
         adjVertices.get(node2).add(node1);
@@ -64,9 +42,16 @@ public class Graph {
         }
     }
 
+    public static Graph fromAdjecencyList(Map<Node, List<Node>> adjacencyList) {
+        return new Graph(adjacencyList);
+    }
     public List<Node> getNodes() {
         List<Node> nodes = new ArrayList<>();
         this.adjVertices.forEach((key, value) -> nodes.add(key));
         return nodes;
+    }
+
+    public Map<Node, List<Node>> getAdjacencyList() {
+        return this.adjVertices;
     }
 }

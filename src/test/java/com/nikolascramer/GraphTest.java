@@ -1,57 +1,75 @@
 package com.nikolascramer;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 class GraphTest {
+    private Graph g;
 
-    @Test
-    void csvToAdjListCheck() throws IOException {
+    @BeforeEach
+    void setup() {
         File file = new File("/Users/niko/Downloads/testGraph.csv");
-        Map<Node, List<Node>> adjList = Graph.csvToAdjList(file);
-
-        adjList.forEach((key, value) -> {
-            String valueIds = value.stream()
-                    .map(node -> String.valueOf(node.getId()))
-                    .collect(Collectors.joining(", "));
-            System.out.println(key.getId() + " -> " + valueIds );
-        });
+        this.g = Graph.fromAdjecencyList(CSVParser.csvToAdjList(file));
     }
 
     @Test
-    void csvToAdjList() throws IOException {
-        File tempFile = File.createTempFile("nodes", "csv");
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
-            bw.write("1,2/3/4\n");
-            bw.write("2,1/4\n");
-            bw.write("3,1/4\n");
-            bw.write("4,1/2/3\n");
-        }
-        Map<Node, List<Node>> adjacencyList = Graph.csvToAdjList(tempFile);
-        Map<Node, List<Node>> expectedList = new HashMap<>();
-        expectedList.put(new Node(1), Arrays.asList(new Node(2), new Node(3), new Node(4)));
-        expectedList.put(new Node(2), Arrays.asList(new Node(1), new Node(4)));
-        expectedList.put(new Node(3), Arrays.asList(new Node(1), new Node(4)));
-        expectedList.put(new Node(4), Arrays.asList(new Node(1), new Node(2), new Node(4)));
+    void addNodeWithNode() {
+        Node node_to_search = new Node(10);
+        g.addNode(node_to_search);
+        List<Node> res = g.getNodes().stream()
+                .filter(node -> node.getId() == node_to_search.getId())
+                .collect(Collectors.toList());
+        assertFalse(res.isEmpty());
+    }
 
-        for (Map.Entry<Node, List<Node>> entry : expectedList.entrySet()) {
-            assertTrue(adjacencyList.containsKey(entry.getKey()), "Adjacency list should contain the key: " + entry.getKey());
-            assertEquals(entry.getValue().size(), adjacencyList.get(entry.getKey()).size(), "Node list size should match for key: " + entry.getKey());
-            assertTrue(adjacencyList.get(entry.getKey()).containsAll(entry.getValue()), "Node list should contain all expected nodes for key: " + entry.getKey());
+    @Test
+    void testAddNodeWithId() {
+        Integer id = 10;
+        Node node_to_search = new Node(id);
+        g.addNode(node_to_search);
+        List<Node> res = g.getNodes().stream()
+                .filter(node -> node.getId() == id)
+                .collect(Collectors.toList());
+        assertFalse(res.isEmpty());
+    }
+
+    @Test
+    void removeNode_checkNodes() {
+        Node node = g.getNodes().get(0);
+        g.removeNode(node);
+        assertFalse(g.getAdjacencyList().containsKey(node), "Node should be removed from the adjacency list");
+    }
+
+    @Test
+    void removeNode_checkEdges() {
+        Node node = g.getNodes().get(0);
+        g.removeNode(node);
+        for (Map.Entry<Node, List<Node>> entry : g.getAdjacencyList().entrySet()) {
+            assertFalse(entry.getValue().contains(node));
         }
-       tempFile.delete();
-        /*
-        adjList.forEach((key, value) -> {
-            String valueIds = value.stream()
-                    .map(node -> String.valueOf(node.getId()))
-                    .collect(Collectors.joining(", "));
-                    System.out.println(key.getId() + " -> " + valueIds );
-                });
-         */
+    }
+
+    @Test
+    void addEdge() {
+    }
+
+    @Test
+    void removeEdge() {
+    }
+
+    @Test
+    void fromAdjecencyList() {
+    }
+
+    @Test
+    void getNodes() {
     }
 }

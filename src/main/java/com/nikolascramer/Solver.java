@@ -12,18 +12,17 @@ public class Solver {
         this.cars = cars;
         this.customers = customers;
         this.clock = clock;
+        this.algorithm = new Algorithm(this.cars, this.customers);
     }
 
-    public void startSolve(List<Car> cars, List<User> customers, TimeTracker clock) {
-        Algorithm algorithm = new Algorithm(cars, customers);
-        
-        while (!clock.hasEnded()) {
-            Map<Car, List<User>> matchings = algorithm.matchCarsToCustomer();
+    public void startSolve() {
+        while (!this.clock.hasEnded()) {
+            Map<Car, List<User>> matchings = this.algorithm.matchCarsToCustomer();
 
             updateStates(matchings);
 
-            clock.tick();
-            System.out.println("Current time is " + clock.getTime());
+            this.clock.tick();
+            System.out.println("Current time is " + this.clock.getTime());
         }
     }
 

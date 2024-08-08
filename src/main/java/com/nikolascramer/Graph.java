@@ -42,9 +42,6 @@ public class Graph {
         }
     }
 
-    public static Graph fromAdjecencyList(Map<Node, List<Node>> adjacencyList) {
-        return new Graph(adjacencyList);
-    }
     public List<Node> getNodes() {
         List<Node> nodes = new ArrayList<>();
         this.adjVertices.forEach((key, value) -> nodes.add(key));
@@ -53,5 +50,38 @@ public class Graph {
 
     public Map<Node, List<Node>> getAdjacencyList() {
         return this.adjVertices;
+    }
+
+    public Set<Integer> depthFirstTravel(Integer root) {
+        Set<Integer> visited = new LinkedHashSet<Integer>();
+        Stack<Integer> stack = new Stack<Integer>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            Integer node = stack.pop();
+            if (!visited.contains(node)) {
+                visited.add(node);
+                for (Node v : this.adjVertices) {
+                    stack.push(v.label);
+                }
+            }
+        }
+    }
+
+    private Map<Node[], Float> createCosts(Map<Node, List<Node>> adjacency_List) {
+        Map<Node[], Float> costs = new HashMap<Node[], Float>();
+        for (Node node_from_graph : adjacency_List.keySet()) {
+            for(Node node_to_graph : adjacency_List.keySet()) {
+                    Node[] node_tuple = new Node[2];
+                    node_tuple[1] = node_from_graph;
+                    node_tuple[2] = node_to_graph;
+                    float costBetweenCurrentNodes = calculateDistanceCostBetweenTwoNodes(node_from_graph, node_to_graph);
+                    costs.put(node_tuple, costBetweenCurrentNodes);
+            }
+        }
+        return costs;
+    }
+
+    private float calculateDistanceCostBetweenTwoNodes(node_1, node_2) {
+
     }
 }

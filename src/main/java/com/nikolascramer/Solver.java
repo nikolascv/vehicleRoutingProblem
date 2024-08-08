@@ -1,6 +1,7 @@
 package com.nikolascramer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Solver {
     private List<Car> cars;
@@ -12,14 +13,27 @@ public class Solver {
         this.cars = cars;
         this.customers = customers;
         this.clock = clock;
-        this.algorithm = new Algorithm(this.cars, this.customers);
     }
 
     public void startSolve() {
         while (!this.clock.hasEnded()) {
-            Map<Car, List<User>> matchings = this.algorithm.matchCarsToCustomer();
+            List<Car> available_cars = new ArrayList<>();
+            for (Car car : this.cars) {
+                if (car.getState() == Car.CarState.valueOf("AVAILABLE")) {
+                    available_cars.add(car);
+                }
+            }
 
-            updateStates(matchings);
+            List<User> unassigned_users = new ArrayList<>();
+            for (User user : this.customers) {
+                if (user.getState() == User.UserState.valueOf("UNASSIGNED")) {
+                    unassigned_users.add(user);
+                }
+            }
+
+            Map<Car, User> carToUserMatching = Algorithm.matchCarsToCustomer(unassigned_users, available_cars);
+
+            updateCarStates(carToUserMatching);
 
             this.clock.tick();
             System.out.println("Current time is " + this.clock.getTime());
@@ -28,22 +42,14 @@ public class Solver {
 
 
 
-    private void updateStates(Map<Car, List<User>> matchings) {
-        /* 
-        With these matchings between cars and users, the updateStates() function should ideally update the routes of
-        the cars. Whenever the routes of the cars get updated, the car class should then move the car as well.
-        Because we already know that this is the optimal route, the car just needs to move to the next node, no need
-        to figure out what the best route is to the next node in the route.
-         */
-        // This is going to depend a bit on the Matching Cars to users, because how do we extract the route
-        // the car is taking to visit those customers. Running the optimization twice seems to not be ideal.
-        for (Car car : cars) {
-            car.updateLocation();
-        }
-        for (User user : customers) {
-            // Figure out a way of how to know if a customer has been picked up
-            // This information should then be passed to the User object and to the car to be added as a passenger.
+    private void updateCarStates(Map<Car, User> matchings) {
+        for (Map.Entry<Car, User> entry : matchings.entrySet()) {
+           Car car = entry.getKey();
+           User users = entry.getValue();
+
+        // Graph traversal goes here
         }
     }
+
 
 }
